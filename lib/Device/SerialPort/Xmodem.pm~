@@ -1,0 +1,82 @@
+package Device::SerialPort::Xmodem;
+
+use 5.008007;
+use strict;
+use warnings;
+
+require Exporter;
+use AutoLoader qw(AUTOLOAD);
+
+our @ISA = qw(Exporter);
+
+# Items to export into callers namespace by default. Note: do not export
+# names by default without a very good reason. Use EXPORT_OK instead.
+# Do not simply export all your public functions/methods/constants.
+
+# This allows declaration	use Device::SerialPort::Xmodem ':all';
+# If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
+# will save memory.
+our %EXPORT_TAGS = ( 'all' => [ qw(
+	
+) ] );
+
+our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
+
+our @EXPORT = qw(
+	
+);
+
+our $VERSION = '1.00';
+
+require XSLoader;
+XSLoader::load('Device::SerialPort::Xmodem', $VERSION);
+
+# Preloaded methods go here.
+
+# Autoload methods go after =cut, and are processed by the autosplit program.
+
+1;
+__END__
+# Below is stub documentation for your module. You'd better edit it!
+
+=head1 NAME
+
+Device::SerialPort::Xmodem - Xmodem file transfer protocol for Device::SerialPort
+
+=head1 SYNOPSIS
+
+  use Device::SerialPort::Xmodem;
+
+=head1 DESCRIPTION
+
+This is an Xmodem implementation designed to receive a file using 128
+byte blocks. This module is intended to be passed an open and prepared
+port with active connection.
+
+At this time it can only receive 128 byte blocks, however 1k blocks are
+in the works. I do plan to write a send functionality soon.
+
+=head2 EXPORT
+
+None by default.
+
+=head1 SEE ALSO
+
+=item - L<Device::SerialPort>
+=item - L<Device::Modem::Protocol::Xmodem>
+
+=head1 AUTHORS
+
+Based on Device::Modem::Protocol::Xmodem, version 1.44, by Cosimo Streppone, E<lt>cosimo@cpan.orgE<gt>.
+Ported to Device::SerialPort by Aaron Mitti, E<lt>mitti@cpan.orgE<gt>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (C) 2002-2004 Cosimo Streppone, E<lt>cosimo@cpan.orgE<gt>
+Copyright (C) 2005 by Aaron Mitti, E<lt>mitti@cpan.orgE<gt>
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+
+=cut
