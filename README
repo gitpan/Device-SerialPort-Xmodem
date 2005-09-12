@@ -1,4 +1,4 @@
-Device-SerialPort-Xmodem version 1.00
+Device-SerialPort-Xmodem version 1.01
 =====================================
 
 This is an Xmodem implementation designed to receive a file using 128

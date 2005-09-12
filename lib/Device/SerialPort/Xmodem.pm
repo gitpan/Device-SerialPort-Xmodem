@@ -2,7 +2,7 @@ use 5.0;
 use strict;
 use warnings;
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 # Preloaded methods go here.
 
@@ -98,8 +98,8 @@ sub to_string {
 #		'cccA'.$self->{'length'}.'c',
 		
 #		$self->{'length'} == 128;
-#			? Xmodem::Constants::soh   # Start Of Header (block size = 128)
-#			: Xmodem::Constants::stx,  # Start Of Text   (block size = 1024)
+#			? Device::SerialPort::Xmodem::Constants::soh   # Start Of Header (block size = 128)
+#			: Device::SerialPort::Xmodem::Constants::stx,  # Start Of Text   (block size = 1024)
 
 #		$block_num,                    # Block number
 
@@ -218,7 +218,7 @@ sub abort_transfer {
 	my $self = $_[0];
 	# Send a cancel char to abort transfer
 	_log('aborting transfer');
-	$self->port->write( chr(Xmodem::Constants::can()) );
+	$self->port->write( chr(Device::SerialPort::Xmodem::Constants::can()) );
 	$self->port->write_drain();
 	$self->{aborted} = 1;
 	return 1;
@@ -233,10 +233,10 @@ sub new {
 	my $class = ref $proto || $proto;
 
 	# Create `port' object if does not exist
-	_log('opt{port} = ', $opt{port});
+	_log('port = ', $opt{port});
 	if( ! exists $opt{port} ) {
-		require Device::SerialPort;
-		$opt{port} = Device::SerialPort->new();
+    _log('No valid port given, giving up.');
+    return 0;
 	}
 
 	my $self = {
@@ -264,19 +264,42 @@ sub receive_message {
 	my $message_complement = 0;
 	my $message_data;
 	my $message_checksum;
-  my $count_in;
+  my $count_in = 0;
+  my $count_in_tmp = 0;
+  my $received_tmp;
   my $received;
+  my $done = 0;
+  my $error = 0;
+  
+  my $receive_start_time = time;
   
 	# Receive answer
-  ($count_in, $received) = $self->port->read(132);
-
+  do {
+    ($count_in_tmp, $received_tmp) = $self->port->read(132);
+    $received .= $received_tmp;
+    $count_in += $count_in_tmp;
+    if ((ord(substr($received, 0, 1)) != 1) && ($count_in > 0)) {
+      _log('done block');
+      $done = 1;
+    } elsif ($count_in >= 132) {
+      _log('done short message');
+      $done = 1;
+    } elsif (time > $receive_start_time + 60) {
+      $error = 1;
+    }
+  } while(!$done && !$error);
+  
+  if ($error) {
+    _log('timeout receiving message');
+  }
+  
 	_log('[receive_message][', $count_in, '] received [', unpack('H*',$received), '] data');
 
   # Get Message Type
   $message_type = ord(substr($received, 0, 1));
   
 	# If this is a block extract data from message
-	if( $message_type eq Xmodem::Constants::soh()   ) {
+	if( $message_type eq Device::SerialPort::Xmodem::Constants::soh()   ) {
     
     # Check block number and its 2's complement
     ($message_number, $message_complement) = ( ord(substr($received,1,1)), ord(substr($received,2,1)) );
@@ -303,7 +326,7 @@ sub run {
 	my $self  = $_[0];
 	my $port = $self->{_port};
 	my $file  = $_[1] || $self->{_filename};
-	my $protocol = $_[2] || Xmodem::Constants::XMODEM();
+	my $protocol = $_[2] || Device::SerialPort::Xmodem::Constants::XMODEM();
 
 	_log('[run] checking modem[', $port, '] or file[', $file, '] members');
 	return 0 unless $port and $file;
@@ -315,7 +338,7 @@ sub run {
 	# Initialize a receiving buffer
 	_log('[run] creating new receive buffer');
 
-	my $buffer = Xmodem::Buffer->new();
+	my $buffer = Device::SerialPort::Xmodem::Buffer->new();
 
 	# Stage 1: handshaking for xmodem standard version 
 	_log('[run] sending first timeout');
@@ -323,7 +346,7 @@ sub run {
 
 	my $file_complete = 0;
 
-	$self->{current_block} = Xmodem::Block->new(0);
+	$self->{current_block} = Device::SerialPort::Xmodem::Block->new(0);
 
 	# Open output file
 	return undef unless open OUTFILE, '>'.$file;
@@ -334,10 +357,10 @@ sub run {
 		# Try to receive a message
 		my %message = $self->receive_message();
     
-    if ( $message{type} eq Xmodem::Constants::nul() ) {
+    if ( $message{type} eq Device::SerialPort::Xmodem::Constants::nul() ) {
       # Nothing received yet, do nothing
       _log('[run] <NUL>', $message{type});
-		} elsif ( $message{type} eq Xmodem::Constants::eot() ) {
+		} elsif ( $message{type} eq Device::SerialPort::Xmodem::Constants::eot() ) {
       # If last block transmitted mark complete and close file
       _log('[run] <EOT>', $message{type});
 
@@ -349,7 +372,7 @@ sub run {
       print(OUTFILE $buffer->dump());
       
 	    close OUTFILE;
-		} elsif ( $message{type} eq Xmodem::Constants::soh() ) {
+		} elsif ( $message{type} eq Device::SerialPort::Xmodem::Constants::soh() ) {
       # If message header, check integrity and build block
       _log('[run] <SOH>', $message{type});
       my $message_status = 1;
@@ -367,7 +390,7 @@ sub run {
       }
 
       # Instance a new "block" object from message data received
-      my $new_block = Xmodem::Block->new( $message{number}, $message{data} );
+      my $new_block = Device::SerialPort::Xmodem::Block->new( $message{number}, $message{data} );
 
       # Check block against checksum
       if (!( defined $new_block && $new_block->verify( 'checksum', $message{checksum}) )) {
@@ -404,7 +427,7 @@ sub run {
 sub send_ack {
 	my $self = $_[0];
 	_log('sending ack');
-	$self->port->write( chr(Xmodem::Constants::ack()) );
+	$self->port->write( chr(Device::SerialPort::Xmodem::Constants::ack()) );
 	$self->port->write_drain();
 	$self->{timeouts} = 0;
 	return 1;
@@ -413,7 +436,7 @@ sub send_ack {
 sub send_nak {
 	my $self = $_[0];
 	_log('sending timeout (', $self->{timeouts}, ')');
-	$self->port->write( chr(Xmodem::Constants::nak()) );
+	$self->port->write( chr(Device::SerialPort::Xmodem::Constants::nak()) );
 	$self->port->write_drain();
 	$self->{timeouts}++;
 	return 1;

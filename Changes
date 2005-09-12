@@ -1,5 +1,9 @@
 Revision history for Perl extension Device::SerialPort::Xmodem.
 
+1.01  Mon Sep 11 13:36:59 2005
+	- fixed several namespace issues
+	- improved receive_message to handle timing
+
 1.00  Fri Sep  9 17:36:29 2005
 	- original version; created by h2xs 1.23 with options
 		-cfn Device::SerialPort::Xmodem
