@@ -1,4 +1,4 @@
-Device-SerialPort-Xmodem version 1.01
+Device-SerialPort-Xmodem version 1.02
 =====================================
 
 This is an Xmodem implementation designed to receive a file using 128
@@ -6,7 +6,7 @@ byte blocks. This module is intended to be passed an open and prepared
 port with active connection.
 
 At this time it can only receive 128 byte blocks, however 1k blocks are
-in the works. I do plan to write a send functionality soon.
+in the works. Full send and receive functionality is supported.
 
 INSTALLATION
 
