@@ -1,4 +1,4 @@
-Device-SerialPort-Xmodem version 1.02
+Device-SerialPort-Xmodem version 1.03
 =====================================
 
 This is an Xmodem implementation designed to receive a file using 128
@@ -31,7 +31,7 @@ Ported to Device::SerialPort by Aaron Mitti.
 COPYRIGHT AND LICENCE
 
 Copyright (C) 2002-2004 Cosimo Streppone, cosimo@cpan.org
-Copyright (C) 2005 by Aaron Mitti, mitti@cpan.org
+Copyright (C) 2005-2006 Aaron Mitti, mitti@cpan.org
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

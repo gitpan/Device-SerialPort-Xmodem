@@ -57,11 +57,11 @@ DIRFILESEP = /
 DFSEP = $(DIRFILESEP)
 NAME = Device::SerialPort::Xmodem
 NAME_SYM = Device_SerialPort_Xmodem
-VERSION = 1.02
+VERSION = 1.03
 VERSION_MACRO = VERSION
-VERSION_SYM = 1_02
+VERSION_SYM = 1_03
 DEFINE_VERSION = -D$(VERSION_MACRO)=\"$(VERSION)\"
-XS_VERSION = 1.02
+XS_VERSION = 1.03
 XS_VERSION_MACRO = XS_VERSION
 XS_DEFINE_VERSION = -D$(XS_VERSION_MACRO)=\"$(XS_VERSION)\"
 INST_ARCHLIB = blib/arch
@@ -257,7 +257,7 @@ RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
 DISTNAME = Device-SerialPort-Xmodem
-DISTVNAME = Device-SerialPort-Xmodem-1.02
+DISTVNAME = Device-SerialPort-Xmodem-1.03
 
 
 # --- MakeMaker macro section:
@@ -564,7 +564,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '# http://module-build.sourceforge.net/META-spec.html' > META_new.yml
 	$(NOECHO) $(ECHO) '#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#' >> META_new.yml
 	$(NOECHO) $(ECHO) 'name:         Device-SerialPort-Xmodem' >> META_new.yml
-	$(NOECHO) $(ECHO) 'version:      1.02' >> META_new.yml
+	$(NOECHO) $(ECHO) 'version:      1.03' >> META_new.yml
 	$(NOECHO) $(ECHO) 'version_from: lib/Device/SerialPort/Xmodem.pm' >> META_new.yml
 	$(NOECHO) $(ECHO) 'installdirs:  site' >> META_new.yml
 	$(NOECHO) $(ECHO) 'requires:' >> META_new.yml
@@ -913,7 +913,7 @@ testdb_static :: pure_all $(MAP_TARGET)
 # --- MakeMaker ppd section:
 # Creates a PPD (Perl Package Description) for a binary distribution.
 ppd:
-	$(NOECHO) $(ECHO) '<SOFTPKG NAME="$(DISTNAME)" VERSION="1,02,0,0">' > $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '<SOFTPKG NAME="$(DISTNAME)" VERSION="1,03,0,0">' > $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <TITLE>$(DISTNAME)</TITLE>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <ABSTRACT>Xmodem file transfer protocol for Device::SerialPort</ABSTRACT>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Aaron Mitti &lt;mitti@cpan.org&gt;</AUTHOR>' >> $(DISTNAME).ppd

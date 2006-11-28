@@ -2,7 +2,7 @@ use 5.004;
 use strict;
 use warnings;
 
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 # Preloaded methods go here.
 
@@ -38,8 +38,14 @@ sub new {
 	my($proto, $num, $data, $length) = @_;
 	my $class = ref $proto || $proto;
 
-	# Define block type (128 or 1k chars) if not specified
-	$length ||= ( length $data > 128 ? 1024 : 128 );
+	# Check is block had required number of parameters
+  if (@_ < 3) {
+    # Return 0 length block
+    $length = 0;
+  } else {
+  	# Define block type (128 or 1k chars) if not specified
+	  $length ||= ( length $data > 128 ? 1024 : 128 );
+  }
 
 	# Define structure of a Xmodem transfer block object
 	my $self = {
